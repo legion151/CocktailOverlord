@@ -18,8 +18,8 @@ def search_list(ingredients):
         possible = db.cocktail_ingredients(db.find_cocktail_using_all_ingredients(ingredients))
     
     return render_template('search.html',
-                           searching=sorted(list(ingredients)),
-                           possible=sorted(list(set(possible) - set(ingredients))),
+                           searching=sorted(ingredients),
+                           possible=sorted(set(possible) - set(ingredients)),
                            cocktails=db.find_cocktail_using_all_ingredients(ingredients))
 
 @app.template_filter('add_search_ingredient')
