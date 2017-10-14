@@ -28,7 +28,7 @@ def add_search_ingredient(s,new):
 
 @app.template_filter('del_search_ingredient')
 def del_search_ingredient(s,new):
-    return set(s) - set(new)
+    return set(s) - set([new])
 
 @app.template_filter('create_search_path')
 def create_search_path(s):
