@@ -41,6 +41,7 @@ def search(searchpath):
     return search_list(ingredients)
     
 @app.route("/search")
+@app.route("/search/")
 def search_start():
     return search_list([])
 

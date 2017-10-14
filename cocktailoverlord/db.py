@@ -198,7 +198,6 @@ class CocktailDB:
             query = query +" AND 0=(SELECT SUM(rps.enough)-COUNT(rps.ingredient) FROM recipe_plus_storage AS rps WHERE rps.cocktail=c.id)"
             
         return self.matching_cocktails(query, ing_ids)
-                                                                                                                                                               
         
     # Returns all cocktails matching a query that returns id as its first column
     def matching_cocktails(self, *args):
@@ -212,7 +211,6 @@ class CocktailDB:
             for row in c.recipe:
                 ret.add(row[0].name)
         return ret
-
 
 if __name__ == "__main__":
     db = CocktailDB("tmp.sqlite3")
