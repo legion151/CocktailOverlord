@@ -38,7 +38,7 @@ class Cocktail:
 
 class CocktailDB:
     def __init__(self, dbfile):
-        self.conn = sqlite3.connect(dbfile)
+        self.conn = sqlite3.connect(dbfile, check_same_thread=False)
         self.cur = self.conn.cursor()
 
     def create_db(self):
