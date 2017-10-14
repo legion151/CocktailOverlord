@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+{% block body %}
+<div>
+  <p>Looking for cocktails using:</p>
+  <ul>
+    {% for i in searching %}
+    <li>{{ i }}</li>
+    {% endfor %}
+  </ul>
+  <p>Refine search to include</p>
+  <ul>
+    {% for i in possible %}
+    <li><a href="/search/{{ searching | add_search_ingredient(i) | create_search_path }}">{{ i }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{{ super() }}
+{% endblock %}
