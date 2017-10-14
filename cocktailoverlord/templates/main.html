@@ -7,8 +7,8 @@
     <div class="c_desc">
       <a href="/mix/{{ i.name | urlencode }}">{{i.name}}</a>
       <ul>
-        {% for ing in i.recipe %}
-        <li>{{ ing[1] }} mL {{ ing[0].name }}</li>
+        {% for ing in i.recipe | sort(reverse=True, attribute='amount') %}
+        <li>{{ ing.amount }} mL {{ ing.ingredient.name }}</li>
         {% endfor %}
       </ul>
   </li>
