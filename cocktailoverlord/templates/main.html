@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<ul id="cocktails">
+  {% for i in cocktails %}
+  <li><a href="/mix/{{ i.name | urlencode }}">{{i.name}}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
