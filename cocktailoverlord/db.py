@@ -205,6 +205,14 @@ class CocktailDB:
         self.cur.execute(*args)
         return [self.get_cocktail(row[0]) for row in self.cur.fetchall()]
 
+    # Returns the set of ingredients of the listed cocktails
+    def cocktail_ingredients(self, cocktails):
+        ret = set()
+        for c in cocktails:
+            for row in c.recipe:
+                ret.add(row[0].name)
+        return ret
+
 
 if __name__ == "__main__":
     db = CocktailDB("tmp.sqlite3")
