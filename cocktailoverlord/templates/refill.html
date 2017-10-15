@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+<form action="/refill" method="POST">
+  <table>
+    <tr>
+      <th>Location</th><th>Ingredient</th><th>Amount</th><th>New amount</th>
+    </tr>
+    {% for i in locations %}
+    <tr>
+      <td>{{ i.location }}</td>
+      <td>
+        <select name="{{i.location}}.ingredient">
+          <option value=""{% if not i.ingredient %} selected{% endif %}>Empty</option>
+          {% for g in ingredients %}<option{% if i.ingredient and i.ingredient.name == g.name %} selected{% endif %}>{{ g.name }}</option>{% endfor %}
+        </select>
+      </td>
+      <td>{{ i.amount }}</td>
+      <td><input type="number" min="0" max="10000" value="{{ i.amount }}" name="{{ i.location }}.amount" />
+    </tr>
+    {% endfor %}
+  </table>
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
