@@ -2,7 +2,16 @@
 {% block body %}
 <ul id="cocktails">
   {% for i in cocktails %}
-  <li><a href="/mix/{{ i.name | urlencode }}">{{i.name}}</a>
+  <li class="cocktail">
+    <div class="c_img"><img src="/{% if i.picture %}{{ i.picture }}{% else %}img/missing.png{% endif %}" /></div>
+    <div class="c_desc">
+      <a href="/mix/{{ i.name | urlencode }}">{{i.name}}</a>
+      <ul>
+        {% for ing in i.recipe | sort(reverse=True, attribute='amount') %}
+        <li>{{ ing.amount }} mL {{ ing.ingredient.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
   </li>
   {% endfor %}
 </ul>

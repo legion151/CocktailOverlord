@@ -1,5 +1,10 @@
 import sqlite3
 
+class RecipeEntry:
+    def __init__(self, ingredient, amount):
+        self.ingredient = ingredient
+        self.amount = amount
+
 class Ingredient:
     def __init__(self, name, abv):
         self.name = name
@@ -30,8 +35,8 @@ class Cocktail:
 
     def pretty_print(self):
         return self.name + "\n" + "\n".join([
-            "- {amount} ml of {name}".format(name=row[0].name, amount=row[1])
-            for row in sorted(self.recipe, key=lambda row: -row[0].abv)])
+            "- {amount} ml of {name}".format(name=row.ingredient.name, amount=row.amount)
+            for row in sorted(self.recipe, key=lambda entry: -entry.ingredient.abv)])
 
     def __repr__(self):
         return self.name
@@ -150,7 +155,7 @@ class CocktailDB:
 
         cocktail = Cocktail(row[0], row[1], {}, cid)
         self.cur.execute("SELECT i.name, i.abv, amount FROM recipe JOIN ingredient AS i ON i.id = ingredient WHERE recipe.cocktail = ?", (cid,))
-        cocktail.recipe = [ (Ingredient(i[0], i[1]), i[2]) for i in self.cur.fetchall() ]
+        cocktail.recipe = [ RecipeEntry(Ingredient(i[0], i[1]), i[2]) for i in self.cur.fetchall() ]
         return cocktail
 
     # Returns all cocktails
@@ -198,7 +203,6 @@ class CocktailDB:
             query = query +" AND 0=(SELECT SUM(rps.enough)-COUNT(rps.ingredient) FROM recipe_plus_storage AS rps WHERE rps.cocktail=c.id)"
             
         return self.matching_cocktails(query, ing_ids)
-                                                                                                                                                               
         
     # Returns all cocktails matching a query that returns id as its first column
     def matching_cocktails(self, *args):
@@ -210,9 +214,8 @@ class CocktailDB:
         ret = set()
         for c in cocktails:
             for row in c.recipe:
-                ret.add(row[0].name)
+                ret.add(row.ingredient.name)
         return ret
-
 
 if __name__ == "__main__":
     db = CocktailDB("tmp.sqlite3")
