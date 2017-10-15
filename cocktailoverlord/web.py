@@ -2,7 +2,7 @@ from db import CocktailDB
 from flask import Flask, request, session, redirect, url_for, abort, render_template, flash
 from urllib.parse import quote, unquote
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="img")
 db = CocktailDB("tmp.sqlite3")
 c=db.get_available_cocktails()
 

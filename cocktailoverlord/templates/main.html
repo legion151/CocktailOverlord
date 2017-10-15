@@ -3,7 +3,7 @@
 <ul id="cocktails">
   {% for i in cocktails %}
   <li class="cocktail">
-    <div class="c_img">{% if i.picture %}<img src="{{ i.picture }}" />{% endif %}</div>
+    <div class="c_img"><img src="/{% if i.picture %}{{ i.picture }}{% else %}img/missing.png{% endif %}" /></div>
     <div class="c_desc">
       <a href="/mix/{{ i.name | urlencode }}">{{i.name}}</a>
       <ul>
