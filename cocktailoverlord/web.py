@@ -45,6 +45,32 @@ def search(searchpath):
 def search_start():
     return search_list([])
 
+@app.route("/refill", methods=["GET", "POST"])
+def refill():
+    if request.method == 'GET':
+        return render_template('refill.html',
+                               locations=db.storage(),
+                               ingredients=db.ingredients()
+        )
+    else:
+        print(request.form)
+        v = {}
+        for key,value in request.form.items():
+            storage, attribute = key.split('.')
+            if not storage in v:
+                v[storage] = { attribute: value }
+            else:
+                v[storage][attribute] = value
+        print(v)
+        for storage, contents in v.items():
+            if contents['ingredient'] == '':
+                db.set_storage_contents(storage, None, 0)
+            else:
+                db.set_storage_contents(storage, contents['ingredient'], contents['amount'])
+        return render_template('refill.html',
+                               locations=db.storage(),
+                               ingredients=db.ingredients())
+
 if __name__ == '__main__':
     app.debug=True
     app.run()

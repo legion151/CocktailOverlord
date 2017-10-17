@@ -16,6 +16,12 @@ class Ingredient:
         else:
             return "{} ({:.1f}%)".format(self.name, 100*self.abv)
 
+class Storage:
+    def __init__(self, location, ingredient, amount):
+        self.location = location
+        self.ingredient = ingredient
+        self.amount = amount
+        
 class Cocktail:
     def __init__(self, name, picture, recipe, cid=None):
         self.name = name
@@ -139,7 +145,10 @@ class CocktailDB:
 
     # Sets a storage location's ingredient and amount
     def set_storage_contents(self, location, ingredient, amount = 0):
-        self.cur.execute("INSERT OR REPLACE INTO storage (location, ingredient, amount) SELECT :location, id, :amount FROM ingredient WHERE name=:name", {'location':location, 'name':ingredient, 'amount':amount})
+        if ingredient is None:
+            self.cur.execute("INSERT OR REPLACE INTO storage (location, ingredient, amount) VALUES (:location, NULL, :amount)", {'location':location, 'amount':amount})
+        else:
+            self.cur.execute("INSERT OR REPLACE INTO storage (location, ingredient, amount) SELECT :location, id, :amount FROM ingredient WHERE name=:name", {'location':location, 'name':ingredient, 'amount':amount})
         self.conn.commit()
 
     # Sets a storage location's amount
@@ -217,6 +226,15 @@ class CocktailDB:
                 ret.add(row.ingredient.name)
         return ret
 
+    # Returns the contents of all storage locations
+    def storage(self):
+        self.cur.execute("SELECT location, ingredient.name, ingredient.abv, amount FROM storage LEFT JOIN ingredient ON ingredient.id = storage.ingredient ORDER BY location")
+        return [ Storage(row[0], None if not row[1] else Ingredient(row[1], row[2]), row[3]) for row in self.cur.fetchall() ]
+            
+    def ingredients(self):
+        self.cur.execute("SELECT name, abv FROM ingredient ORDER BY name");
+        return [ Ingredient(row[0], row[1]) for row in self.cur.fetchall() ]
+    
 if __name__ == "__main__":
     db = CocktailDB("tmp.sqlite3")
     db.delete_db()
@@ -226,10 +244,13 @@ if __name__ == "__main__":
     db.add_ingredient("lime juice", 0)
     db.add_ingredient("egg white", 0)
     db.add_cocktail("Whisky Sour", None, { 'whisky': 40, 'lime juice': 20, 'simple syrup': 10 })
+    db.add_cocktail("Whisky with egg white", None, { 'whisky': 40, 'egg white': 20 })
     db.set_storage_contents(0, 'whisky', 100)
     db.set_storage_contents(1, 'simple syrup', 100)
     db.set_storage_contents(2, 'lime juice', 100)
     db.set_storage_contents(3, 'lime juice', 500)
+    for i in range(4, 15):
+        db.set_storage_contents(i, None, 0)
 
     print("All cocktails:")
     print("\n\n".join([c.pretty_print() for c in db.get_all_cocktails()]))
