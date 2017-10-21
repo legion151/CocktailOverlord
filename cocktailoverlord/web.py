@@ -1,10 +1,12 @@
 from db import CocktailDB
 from flask import Flask, request, session, redirect, url_for, abort, render_template, flash
 from urllib.parse import quote, unquote
+from robots.autoloader import AutoLoader
 
 app = Flask(__name__, static_folder="img")
 db = CocktailDB("tmp.sqlite3")
 c=db.get_available_cocktails()
+robot = AutoLoader("/dev/ttyUSB0")
 
 @app.route("/")
 def cocktail_overview():
@@ -70,6 +72,23 @@ def refill():
         return render_template('refill.html',
                                locations=db.storage(),
                                ingredients=db.ingredients())
+
+@app.route("/mix/<path:cid>")
+def mix(cid):
+    cocktail = db.get_cocktail(cid)
+    if not robot.busy():
+        ingredients = db.get_cocktail_ingredient_locations(cocktail.name)
+        robot.mix(ingredients)
+        print(ingredients)
+    return render_template('inprogress.html', cocktail=cocktail,
+                           progress=robot.progress())
+
+@app.route("/mixing/<path:cid>")
+def mixing(cid):
+    cocktail = db.get_cocktail(cid)
+    return render_template('inprogress.html', cocktail=cocktail,
+                           progress=robot.progress())
+
 
 if __name__ == '__main__':
     app.debug=True

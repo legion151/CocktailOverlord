@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Mixing...</h1>
+
+<div class="c_img"><img src="/{% if cocktail.picture %}{{ cocktail.picture }}{% else %}img/missing.png{% endif %}" /></div>
+<div class="c_desc">
+  {{cocktail.name}}
+  <ul>
+    {% for ing in cocktail.recipe | sort(reverse=True, attribute='amount') %}
+    <li>{{ ing.amount }} mL {{ ing.ingredient.name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
