@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block header %}
+<meta http-equiv="refresh" content="1">
+{% endblock %}
+{% block body %}
+<ul>
+  {% if not connected %}
+  <li>
+    <form action="" method="POST">
+      Connect
+      <input type="hidden", name="connect" value="1" />
+      <input type="submit" value="Submit" />
+    </form>
+  </li>
+  {% else %}
+  <li>
+    <form action="" method="POST">
+      Disconnect
+      <input type="hidden", name="disconnect" value="1" />
+      <input type="submit" value="Submit" />
+    </form>
+  </li>
+  {% endif %}
+  <li>
+    <form action="" method="POST">
+      Homing
+      <input type="hidden", name="home" value="1" />
+      <input type="submit" value="Submit" />
+    </form>
+  </li>
+</ul>
+{% endblock %}

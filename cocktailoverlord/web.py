@@ -23,7 +23,7 @@ from robots.autoloader import AutoLoader
 app = Flask(__name__, static_folder="img")
 db = CocktailDB("tmp.sqlite3")
 c=db.get_available_cocktails()
-robot = AutoLoader("/dev/ttyUSB0")
+robot = AutoLoader()#"/dev/ttyUSB0")
 
 @app.route("/")
 def cocktail_overview():
@@ -106,6 +106,17 @@ def mixing(cid):
     return render_template('inprogress.html', cocktail=cocktail,
                            progress=robot.progress())
 
+@app.route("/system", methods=["GET", "POST"])
+def system():
+    if request.method == 'POST':
+        if request.form.get("connect"):
+            robot.autoconnect()
+        elif request.form.get("disconnect"):
+            robot.disconnect()
+    status = ""
+    return render_template('system.html',
+                           status=status,
+                           connected=robot.ser.isOpen())
 
 if __name__ == '__main__':
     app.debug=True
