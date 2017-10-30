@@ -31,7 +31,7 @@ class AutoLoader(Robot):
     def gcode(self, pos, amount, reserve):
         xo,yo, xi, yi = self.positions[pos]
         sx, sy = self.speedx, self.speedy
-        time = amount / 10. # XXX use reserve
+        time = max(amount / 10. - 0.7, 0.2) # XXX use reserve
         return b"""
 g1 y %i f %i
 g1 x %i f %i
