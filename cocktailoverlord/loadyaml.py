@@ -5,7 +5,6 @@ import db
 import sys
 
 def yaml2db(yamldata, db, force=True):
-    print(data)
     for name, percentage in data['ingredients'].items():
         db.add_ingredient(name, percentage, force)
     ingredients = set()
@@ -29,5 +28,8 @@ if __name__ == "__main__":
 
     data = yaml.load(open(filename, 'r'))
     db = db.CocktailDB(dbfile)
+    db.create_db()
+    for i in range(15):
+        db.set_storage_contents(i, None, 0)
     missing_ingredients= yaml2db(data, db)
     print(ingredients2yaml(missing_ingredients))
