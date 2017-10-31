@@ -40,6 +40,10 @@ class AutoLoader(Robot):
         
     ]
 
+    for i in range(len(positions)):
+        p = positions[i]
+        positions[i] = (p[0] - 1.5, p[1], p[2]-1.5, p[3])
+
     def __init__(self, port=None):
         super().__init__(port)
         self.speedx = 10000
