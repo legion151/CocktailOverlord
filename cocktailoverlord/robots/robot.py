@@ -37,7 +37,7 @@ class Robot:
         for amount, positions in ingredients:
             best = (-1, -1)
             for pos, reserve in positions:
-                if (reserve > amount + 40 and
+                if (reserve >= amount and
                     (best[1] < 0 or reserve < best[1])):
                     best = (pos, reserve)
             positions[:] = [best]
