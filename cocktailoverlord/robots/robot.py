@@ -20,10 +20,12 @@ import queue
 import sys
 import time
 import re
+import glob
 from threading import Thread
 
 class Robot:
     def __init__(self, port=None):
+        self.cmd_cnt = 0
         self.port = port
         self.ser = serial.Serial(baudrate=115200)
         if port:
@@ -44,7 +46,32 @@ class Robot:
         ingredients.sort(key=lambda x:x[1][0])
         self.sendCmd(b"\n".join((self.gcode(pos, amount, reserve) for
                                  amount, ((pos, reserve),) in ingredients)))
-                
+
+    def autoconnect(self):
+        self.sendCmd(b"##CONNECT")
+
+    def disconnect(self):
+        self.sendCmd(b"##DISCONNECT")
+
+    def _connect(self):
+        for device in glob.glob('/dev/ttyUSB*'):
+            self.ser.port = device
+            try:
+                self.ser.open()
+            except: # XXX
+                print("Could not open device", device)
+                continue
+            self.ser.write(b"?\n")
+            time.sleep(3.0)
+            result = self.ser.read_all()
+            print(result)
+            self.ser.write(b"$X\n")
+            if result:
+                break
+        else:
+            print("No robot found")
+            pass
+
     def readResponse(self):
         while True:
             if self.ser.in_waiting:
@@ -79,9 +106,19 @@ class Robot:
     def send_thread(self):
         while True:
             cmd = self.cmd_queue.get()
-            print(cmd.strip().decode("utf8"), end=' ')
-            self.ser.write(cmd)
-            print(self.readResponse() or "ok")
+            if cmd.startswith(b"##"):
+                if cmd == b"##CONNECT\n":
+                    print("##Connect")
+                    self._connect()
+                if cmd == b"##DISCONNECT\n":
+                    self.ser.close()
+                    while not self.cmd_queue.empty():
+                        self.cmd_queue.get(block=False)
+                    self.cmd_cnt = 0
+            else:
+                print(cmd.strip().decode("utf8"), end=' ')
+                self.ser.write(cmd)
+                print(self.readResponse() or "ok")
 
 if __name__ == "__main__":
 
