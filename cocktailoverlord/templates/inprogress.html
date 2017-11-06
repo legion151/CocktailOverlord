@@ -1,4 +1,7 @@
 {% extends "layout.html" %}
+{% block header %}
+<meta http-equiv="refresh" content="5; URL=../../mixing/{{cid}}">
+{% endblock %}
 {% block body %}
 <h1>Mixing...</h1>
 
@@ -11,4 +14,5 @@
     {% endfor %}
   </ul>
 </div>
+<progress max="{{pmax}}" value="{{pvalue}}">Mixing</progress>
 {% endblock %}

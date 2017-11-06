@@ -93,17 +93,27 @@ def refill():
 @app.route("/mix/<path:cid>")
 def mix(cid):
     cocktail = db.get_cocktail(cid)
-    if not robot.busy():
+    if (robot.ser.isOpen() and
+        not robot.busy()):
         ingredients = db.get_cocktail_ingredient_locations(cocktail.name)
         robot.mix(ingredients)
         print(ingredients)
-    return render_template('inprogress.html', cocktail=cocktail,
+    else:
+            print("Error", robot.busy(), robot.ser.isOpen())
+    return render_template('inprogress.html', cocktail=cocktail, cid=cid,
+                           pmax=robot.cmd_cnt,
+                           pvalue=robot.cmd_cnt - robot.cmd_queue.qsize(),
                            progress=robot.progress())
 
 @app.route("/mixing/<path:cid>")
 def mixing(cid):
     cocktail = db.get_cocktail(cid)
-    return render_template('inprogress.html', cocktail=cocktail,
+    if not robot.busy():
+        return render_template('main.html',
+                               cocktails=db.get_available_cocktails())
+    return render_template('inprogress.html', cocktail=cocktail, cid=cid,
+                           pmax=robot.cmd_cnt,
+                           pvalue=robot.cmd_cnt - robot.cmd_queue.qsize(),
                            progress=robot.progress())
 
 @app.route("/system", methods=["GET", "POST"])
