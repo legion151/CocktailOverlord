@@ -123,6 +123,8 @@ def system():
             robot.autoconnect()
         elif request.form.get("disconnect"):
             robot.disconnect()
+        elif request.form.get("home"):
+            robot.sendCmd(b"$h")
     status = ""
     return render_template('system.html',
                            status=status,
