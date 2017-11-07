@@ -24,16 +24,15 @@ import glob
 from threading import Thread
 
 class Robot:
-    def __init__(self, port=None):
+    def __init__(self, ports=None):
         self.cmd_cnt = 0
-        self.port = port
         self.ser = serial.Serial(baudrate=115200)
-        if port:
-            self.ser.port = port
-            self.ser.open()
+        self.state = "offline"
         self.cmd_queue = queue.Queue()
         self.worker = Thread(target=self.send_thread)
         self.worker.start()
+        if ports:
+            self._connect(ports)
 
     def mix(self, ingredients):
         for amount, positions in ingredients:
@@ -53,8 +52,11 @@ class Robot:
     def disconnect(self):
         self.sendCmd(b"##DISCONNECT")
 
-    def _connect(self):
-        for device in glob.glob('/dev/ttyUSB*'):
+    def _connect(self, ports=None):
+        if not ports:
+            ports = glob.glob('/dev/ttyUSB*')
+        for device in ports:
+            self.state = "connecting"
             self.ser.port = device
             try:
                 self.ser.open()
@@ -62,15 +64,23 @@ class Robot:
                 print("Could not open device", device)
                 continue
             self.ser.write(b"?\n")
-            time.sleep(3.0)
-            result = self.ser.read_all()
+            start = time.time()
+            result = b""
+            while True:
+                result += self.ser.read_all()
+                if result.find(b"[MSG:'$H'|'$X' to unlock]") >= 0:
+                    self.state = "connected"
+                    print("connected")
+                    break
+                if time.time() - start > 15.:
+                    break
             print(result)
             self.ser.write(b"$X\n")
-            if result:
+            if self.state == "connected":
                 break
         else:
+            self.state = "offline"
             print("No robot found")
-            pass
 
     def readResponse(self):
         while True:
@@ -84,6 +94,7 @@ class Robot:
                     return int(m.group(1))
 
     def sendCmd(self, cmd):
+        self.state = "busy"
         cmd = cmd.split(b"\n")
         self.cmd_cnt = 0
         for l in cmd:
@@ -111,6 +122,7 @@ class Robot:
                     print("##Connect")
                     self._connect()
                 if cmd == b"##DISCONNECT\n":
+                    self.state = "offline"
                     self.ser.close()
                     while not self.cmd_queue.empty():
                         self.cmd_queue.get(block=False)
@@ -119,6 +131,8 @@ class Robot:
                 print(cmd.strip().decode("utf8"), end=' ')
                 self.ser.write(cmd)
                 print(self.readResponse() or "ok")
+            if self.cmd_queue.empty(): # XXX not on error
+                self.state = "connected"
 
 if __name__ == "__main__":
 

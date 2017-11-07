@@ -28,6 +28,7 @@ robot = AutoLoader()#"/dev/ttyUSB0")
 @app.route("/")
 def cocktail_overview():
     return render_template('main.html',
+                           state=robot.state,
                            cocktails=db.get_available_cocktails())
 
 def search_list(ingredients):
@@ -37,6 +38,7 @@ def search_list(ingredients):
         possible = db.cocktail_ingredients(db.find_cocktail_using_all_ingredients(ingredients))
     
     return render_template('search.html',
+                           state=robot.state,
                            searching=sorted(ingredients),
                            possible=sorted(set(possible) - set(ingredients)),
                            cocktails=db.find_cocktail_using_all_ingredients(ingredients))
@@ -68,6 +70,7 @@ def search_start():
 def refill():
     if request.method == 'GET':
         return render_template('refill.html',
+                               state=robot.state,
                                locations=db.storage(),
                                ingredients=db.ingredients()
         )
@@ -87,6 +90,7 @@ def refill():
             else:
                 db.set_storage_contents(storage, contents['ingredient'], contents['amount'])
         return render_template('refill.html',
+                               state=robot.state,
                                locations=db.storage(),
                                ingredients=db.ingredients())
 
@@ -100,7 +104,9 @@ def mix(cid):
         print(ingredients)
     else:
             print("Error", robot.busy(), robot.ser.isOpen())
-    return render_template('inprogress.html', cocktail=cocktail, cid=cid,
+    return render_template('inprogress.html',
+                           state=robot.state,
+                           cocktail=cocktail, cid=cid,
                            pmax=robot.cmd_cnt,
                            pvalue=robot.cmd_cnt - robot.cmd_queue.qsize(),
                            progress=robot.progress())
@@ -110,8 +116,11 @@ def mixing(cid):
     cocktail = db.get_cocktail(cid)
     if not robot.busy():
         return render_template('main.html',
+                               state=robot.state,
                                cocktails=db.get_available_cocktails())
-    return render_template('inprogress.html', cocktail=cocktail, cid=cid,
+    return render_template('inprogress.html',
+                           state=robot.state,
+                           cocktail=cocktail, cid=cid,
                            pmax=robot.cmd_cnt,
                            pvalue=robot.cmd_cnt - robot.cmd_queue.qsize(),
                            progress=robot.progress())
@@ -125,9 +134,8 @@ def system():
             robot.disconnect()
         elif request.form.get("home"):
             robot.sendCmd(b"$h")
-    status = ""
     return render_template('system.html',
-                           status=status,
+                           state=robot.state,
                            connected=robot.ser.isOpen())
 
 if __name__ == '__main__':

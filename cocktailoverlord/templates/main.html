@@ -5,7 +5,11 @@
   <li class="cocktail">
     <div class="c_img"><img src="/{% if i.picture %}{{ i.picture }}{% else %}img/missing.png{% endif %}" /></div>
     <div class="c_desc">
+      {% if state == "connected" %}
       <a href="/mix/{{ i.id | urlencode }}">{{i.name}}</a>
+      {% else %}
+      {{i.name}}
+      {% endif %}
       <ul>
         {% for ing in i.recipe | sort(reverse=True, attribute='amount') %}
         <li>{{ ing.amount }} mL {{ ing.ingredient.name }}</li>

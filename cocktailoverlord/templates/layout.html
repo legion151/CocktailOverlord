@@ -12,6 +12,7 @@
       div.c_desc  { margin-left: 8em; }
       #menu { overflow: auto; background-color: #eee; padding: 0.5em 1em; }
       #menu li { display: block; float: left; margin-left: 1em; }
+      #menu li.rightmenu { display: block; float: right; margin-left: 1em; }
     </style>
   </head>
   <body>
@@ -19,7 +20,8 @@
       <li><a href="/">Overview</a></li>
       <li><a href="/search/">Search</a></li>
       <li><a href="/refill">Refill</a></li>
-      <li><a href="/system">System</a></li>
+      <li class="rightmenu">{{state}}</li>
+      <li class="rightmenu"><a href="/system">System</a></li>
     </ul>
     {% block body %}{% endblock %}
   </body>
