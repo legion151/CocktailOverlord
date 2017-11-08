@@ -5,7 +5,7 @@
   <li class="cocktail">
     <div class="c_img"><img src="/{% if i.picture %}{{ i.picture }}{% else %}img/missing.png{% endif %}" /></div>
     <div class="c_desc">
-      {% if state == "connected" %}
+      {% if state == "ready" %}
       <a href="/mix/{{ i.id | urlencode }}">{{i.name}}</a>
       {% else %}
       {{i.name}}

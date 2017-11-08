@@ -132,7 +132,7 @@ class Robot:
                 self.ser.write(cmd)
                 print(self.readResponse() or "ok")
             if self.cmd_queue.empty(): # XXX not on error
-                self.state = "connected"
+                self.state = "ready"
 
 if __name__ == "__main__":
 
