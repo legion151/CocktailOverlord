@@ -131,8 +131,8 @@ class Robot:
                 print(cmd.strip().decode("utf8"), end=' ')
                 self.ser.write(cmd)
                 print(self.readResponse() or "ok")
-            if self.cmd_queue.empty(): # XXX not on error
-                self.state = "ready"
+                if self.cmd_queue.empty(): # XXX not on error
+                    self.state = "ready"
 
 if __name__ == "__main__":
 
