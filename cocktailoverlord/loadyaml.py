@@ -41,7 +41,7 @@ def ingredients2yaml(ingredients):
 
 if __name__ == "__main__":
     filename = "mycocktails.yaml"
-    dbfile = "testdb.sqlite"
+    dbfile = "tmp.sqlite3"
 
     data = yaml.load(open(filename, 'r'))
     db = db.CocktailDB(dbfile)
