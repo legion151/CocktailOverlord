@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Copyright (C) 2017 - The CocktailOverlord Authors
 
