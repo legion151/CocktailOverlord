@@ -173,6 +173,13 @@ class CocktailDB:
         self.cur.execute("UPDATE storage SET amount=? WHERE location=?", (amount, location))
         self.conn.commit()
 
+    def create_storage(self, positions):
+        for i in range(positions):
+            self.cur.execute("SELECT * FROM storage WHERE location=?", (i,))
+            if self.cur.fetchone():
+                continue
+            self.set_storage_contents(i, None)
+
     def get_cocktail(self, cid):
         self.cur.execute("SELECT name, picture FROM cocktail WHERE id=?", (cid,))
         row = self.cur.fetchone()
