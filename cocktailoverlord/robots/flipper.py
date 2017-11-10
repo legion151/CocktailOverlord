@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from robots.robot import Robot
 
-class AutoLoader(Robot):
+class Flipper(Robot):
 
     positions = [
         (-187, -2, -188, -170), #  0 l

@@ -18,12 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from db import CocktailDB
 from flask import Flask, request, session, redirect, url_for, abort, render_template, flash
 from urllib.parse import quote, unquote
-from robots.autoloader import AutoLoader
+from robots.flipper import Flipper
 
 app = Flask(__name__, static_folder="img")
 db = CocktailDB("tmp.sqlite3")
 c=db.get_available_cocktails()
-robot = AutoLoader()#"/dev/ttyUSB0")
+robot = Flipper()
 
 @app.route("/")
 def cocktail_overview():
