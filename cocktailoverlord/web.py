@@ -24,6 +24,7 @@ app = Flask(__name__, static_folder="img")
 db = CocktailDB("tmp.sqlite3")
 c=db.get_available_cocktails()
 robot = Flipper()
+db.create_storage(robot.num_ingredients)
 
 @app.route("/")
 def cocktail_overview():

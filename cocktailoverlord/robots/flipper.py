@@ -44,6 +44,8 @@ class Flipper(Robot):
         p = positions[i]
         positions[i] = (p[0] - 1.5, p[1], p[2]-1.5, p[3])
 
+    num_ingredients = len(positions)
+
     def __init__(self, port=None):
         super().__init__(port)
         self.speedx = 10000
