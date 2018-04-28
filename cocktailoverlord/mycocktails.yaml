@@ -1,0 +1,224 @@
+ingredients:
+ Vodka: 0.4
+ White rum: 0.4
+ Gin: 0.4
+ Tequila: 0.4
+ Triple Sec: 0.
+ Kaluha: 0.2
+
+ Ananas juice: 0.
+ Banana juice: 0.
+ Bitter: 0.
+ Blue Curacao syrup: 0.
+ Carbonated Water: 0.
+ Cherry juice: 0.
+ Cocos milk: 0.
+ Cocos syrup: 0.
+ Cream: 0.
+ Gin: 0.
+ Grapefruit juice: 0.
+ Grenadine: 0.
+ Lime juice: 0.
+ Limonade: 0.
+ Maracuja nectar: 0.
+ Milk: 0.
+ Orange juice: 0.
+ Pear juice: 0.
+ Sugar syrup: 0.
+ Tonic Water: 0.
+ Woodruff syrup: 0.
+ Coke: 0.
+ Sugar syrup: 0.
+
+cocktails:
+ White Russian:
+  Vodka: 60
+  Kaluha: 40
+  Milk: 100
+
+ Vodka Tonic:
+  Vodka: 60
+  Tonic Water: 100
+
+ Screwdriver:
+  Vodka: 50
+  Orange juice: 100
+
+ Vodka Gimlet:
+  Vodka: 40
+  Lime juice: 20
+
+ Vodka Daisy:
+  Vodka: 50
+  Grenadine: 30
+  Lime juice: 20
+  Limonade: 50
+
+ Vodka Sour:
+  Vodka: 50
+  Lime juice: 30
+  Sugar syrup: 20
+  Carbonated Water: 50
+
+ Margarita:
+  Lime juice: 40
+  Tequila: 40
+  Triple Sec: 20
+
+ Mexicana:
+  Tequila: 30
+  Ananas juice: 30
+  Lime juice: 5
+  Grenadine: 5
+
+ Tequila Sunrise:
+  Tequila: 50
+  Orange juice: 140
+  Grenadine: 20
+
+ Bacardi Cocktail:
+  White rum: 45
+  Lime juice: 15
+  Grenadine: 5
+
+ Daiquiri:
+  White rum: 50
+  Lime juice: 15
+  Sugar syrup: 5
+
+ Swimmingpool:
+  White rum: 40
+  Vodka: 20
+  Blue Curacao syrup: 10
+  Ananas juice: 60
+  Cocos milk: 20
+  Cream: 10
+
+ PlantersPunch:
+  Lime juice: 50
+  Orange juice: 100
+  White rum: 50
+  Sugar syrup: 20
+
+ Cuba Libre:
+  White rum: 60
+  Coke: 120
+
+ Mai Tai:
+  White rum: 40
+  Triple Sec: 10
+  Lime juice: 10
+  Orange juice: 30
+  Ananas juice: 30
+  Grenadine: 5
+
+ Orange Bossom:
+  Gin: 40
+  Orange juice: 40
+
+ Angel's Delight:
+  Gin: 20
+  Triple Sec: 20
+  Cream: 40
+  Grenadine: 5
+
+ Gin Tonic:
+  Gin: 60
+  Lime juice: 10
+  Tonic Water: 100
+
+ Tom Collins:
+  Gin: 60
+  Lime juice: 40
+  Sugar syrup: 20
+  Carbonated Water: 40
+
+ Gin Fizz:
+  Gin: 60
+  Lime juice: 40
+  Sugar syrup: 20
+
+ Rum Fizz:
+  White rum: 60
+  Lime juice: 40
+  Sugar syrup: 20
+
+ Vodka Fizz:
+  Vodka: 60
+  Lime juice: 40
+  Sugar syrup: 20
+
+ Pussy Foot:
+  Ananas juice: 60
+  Orange juice: 60
+  Grapefruit juice: 60
+  Grenadine: 20
+
+ Speedy Gonzales:
+  Maracuja nectar: 60
+  Grapefruit juice: 60
+  Banana juice: 60
+  Blue Curacao syrup: 20
+
+ Mit Meerblick:
+  Banana juice: 40
+  Grapefruit juice: 40
+  Orange juice: 20
+  Lime juice: 20
+  Blue Curacao syrup: 20
+
+ Planters Placebo Punch:
+  Grapefruit juice: 70
+  Ananas juice: 50
+  Lime juice: 10
+  Sugar syrup: 10
+
+ Shirley Temple:
+  Orange juice: 30
+  Lime juice: 20
+  Grenadine: 5
+  Limonade: 100
+
+ Flush of Shame:
+  Cherry juice: 40
+  Lime juice: 20
+  Grenadine: 10
+  Bitter: 10
+  Carbonated Water: 30
+  Tonic Water: 70
+
+ Erster Sonnenstrahl:
+  Pear juice: 40
+  Banana juice: 30
+  Lime juice: 20
+  Tonic Water: 80
+
+ Coconut Kiss:
+  Orange juice: 80
+  Ananas juice: 20
+  Cocos milk: 60
+  #Cream: 40 # extra Cocos syrup
+  Cocos syrup: 20
+  Sugar syrup: 10
+
+ Cinderella:
+  Grapefruit juice: 80
+  Ananas juice: 80
+  Cream: 20
+  Cocos syrup: 20
+  Grenadine: 10
+
+ Kieriki:
+  Banana juice: 40
+  Grapefruit juice: 10
+  Lime juice: 5
+  Cream: 30
+  Woodruff syrup: 15
+
+ KiBa:
+  Cherry juice: 80
+  Banana juice: 120
+
+ Blue & Orange:
+  Orange juice: 150
+  Blue Curacao syrup: 20
