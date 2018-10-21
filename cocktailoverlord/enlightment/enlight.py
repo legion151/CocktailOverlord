@@ -29,6 +29,7 @@ def adjBrightness(colors, b):
   colors[k] = tuple(map(lambda c: int(c*b), v))
 
 def mixAnim(colors, c,  frame, idxs):
+ idxs = map(adjIdx, idxs)
  steps =9
  bottom = .5
  myrange = 1.-bottom
@@ -48,6 +49,7 @@ def mixAnim(colors, c,  frame, idxs):
  
 
 def alertAnim(colors, frame, idxs):
+ idxs = map(adjIdx, idxs)
  steps =3
  bottom = .5
  myrange = 1.-bottom
@@ -62,6 +64,11 @@ def alertAnim(colors, frame, idxs):
     v = 1-(frame%steps*step)
    colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0, 1, v)))
  
+
+def adjIdx(i):
+ #lut_light2Bot = {0:14, 1:12, 2:10, 3:8, 4:6, 5:4, 6:2, 7:0, 8:1, 9:3, 10:5, 11:7, 12:9, 13:11, 14:13}
+ lut_bot2Light = {0:7, 1:8, 2:6, 3:9, 4:5, 5:10, 6:4, 7:11, 8:3, 9:12, 10:2, 11:13, 12:1, 13:14, 14:0} 
+ return lut_bot2Light[i]
 
 
 
