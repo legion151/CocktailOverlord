@@ -2,7 +2,7 @@
 brightness = 1
 
 #speed 1/speed will be waittime
-speed = 1000
+speed = 100
 
 nbrBottles = 15
 

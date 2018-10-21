@@ -21,11 +21,13 @@ import sys
 import time
 import re
 import glob
+from enlightment.enlight import Enlightment
 from threading import Thread
 
 class Robot:
     def __init__(self, ports=None):
         self.cmd_cnt = 0
+        self.enlight = Enlightment()
         self.ser = serial.Serial(baudrate=115200)
         self.state = "offline"
         self.cmd_queue = queue.Queue()
@@ -35,6 +37,7 @@ class Robot:
             self._connect(ports)
 
     def mix(self, ingredients):
+        self.enlight.setMixing([i[1][0][0] for i in ingredients])
         for amount, positions in ingredients:
             best = (-1, -1)
             for pos, reserve in positions:
@@ -54,7 +57,7 @@ class Robot:
 
     def _connect(self, ports=None):
         if not ports:
-            ports = glob.glob('/dev/ttyUSB*')
+            ports = glob.glob('/dev/ttyUSB0')
         for device in ports:
             self.state = "connecting"
             self.ser.port = device
@@ -107,8 +110,13 @@ class Robot:
 
     def progress(self):
         if self.cmd_cnt:
-            return float(self.cmd_queue.qsize()) / self.cmd_cnt
+         v = float(self.cmd_queue.qsize()) / self.cmd_cnt
+         print("progress: " + v)
+         if not v: 
+             self.enlight.stopMixing()
+             return v
         else:
+            self.enlight.stopMixing()
             return 1.0
 
     def busy(self):

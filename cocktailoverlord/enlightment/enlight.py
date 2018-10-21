@@ -69,8 +69,8 @@ class Enlightment:
  def __init__(self):
   self.readConfig()
   self.colors = {}
-  self.device = None
-#  self.ser = serial.Serial("/dev/ttyUSB1")
+  self.device = "asdf"
+  self.ser = serial.Serial("/dev/ttyUSB1", timeout=.01,baudrate=9600)
 
   for i in range(int(self.configMap['nbrBottles'])):
    self.setColor(i, 0,0,0)
@@ -93,8 +93,8 @@ class Enlightment:
   files = map(lambda fn: fn.strip(".py"), files)
   funcs = []
   for f in files: 
-   #funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
-    funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
+   funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
+   #funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
   self.bgAnimFuncs = funcs  
 
 
@@ -102,9 +102,12 @@ class Enlightment:
   self.bgAnim = fp  
 
  def setMixing(self, idxs):
+  log("mix called idx: " + str(idxs))
   self.mixCol = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(100./random.randint(50,100), 1, .15)))
   self.mixingIdxs = idxs
+
  def stopMixing(self):
+  log("stop mixing called")
   self.mixingIdxs = None
   
  
@@ -115,7 +118,7 @@ class Enlightment:
   log("threadloop")
   frame=-1
   while True:
-   while not self.device:
+   while False and not self.device:
     self.connect()
     if not self.device:
      time.sleep(1)
@@ -161,7 +164,7 @@ class Enlightment:
    except:
     log("could not open device" + str(device))
     continue
- # self.sync()
+   self.sync()
    self.ser.write(b'HELL')
    start = time.time()
    result = self.ser.read_all()
@@ -186,6 +189,7 @@ class Enlightment:
     self.ser.write(bytearray([k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
 #    self.sync()
    except:
+#    pass
     self.device = None
 #   print([hex(e) for e in self.ser.read_all()])
   
