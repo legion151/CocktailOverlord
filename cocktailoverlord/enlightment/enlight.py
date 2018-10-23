@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os, serial, sys, time, glob, random, colorsys, importlib
 from threading import Thread
+import db
 
 def log(s):
  print("Enlighter says: " + str(s))
@@ -48,7 +49,7 @@ def mixAnim(colors, c,  frame, idxs):
    colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(hsvc[0]+.5, hsvc[1], v)))
  
 
-def alertAnim(colors, frame, idxs):
+def alertAnim(colors, frame, idxs, tier):
  idxs = map(adjIdx, idxs)
  steps =3
  bottom = .5
@@ -62,7 +63,7 @@ def alertAnim(colors, frame, idxs):
     v = bottom + frame*step
    else:
     v = 1-(frame%steps*step)
-   colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0, 1, v)))
+   colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0 if tier = 2 else .11, 1, v)))
  
 
 def adjIdx(i):
@@ -76,7 +77,8 @@ class Enlightment:
  def __init__(self):
   self.readConfig()
   self.colors = {}
-  self.device = "asdf"
+  self.device = "d"
+  self.db = db.CocktailDB("tmp.sqlite3")
   self.ser = serial.Serial("/dev/ttyUSB1", timeout=.01,baudrate=9600)
 
   for i in range(int(self.configMap['nbrBottles'])):
@@ -116,10 +118,6 @@ class Enlightment:
  def stopMixing(self):
   log("stop mixing called")
   self.mixingIdxs = None
-  
- 
- def getAlertIdxs(self):
-  return [9]
 
  def thread_loop(self):
   log("threadloop")
@@ -131,11 +129,13 @@ class Enlightment:
      time.sleep(1)
 
    frame +=1 
-   self.bgAnim(self.colors, frame)
    if self.mixingIdxs:
     mixAnim(self.colors, self.mixCol, frame, self.mixingIdxs)
+   else:
+    self.bgAnim(self.colors, frame)
    
-   alertAnim(self.colors, frame , self.getAlertIdxs())
+   alertAnim(self.colors, frame , self.db.get_bottles_toWarn(1), 1)
+   alertAnim(self.colors, frame , self.db.get_bottles_toWarn(2), 2)
 
    adjBrightness(self.colors, b = float(self.configMap['brightness']))
    self.serWrite()
