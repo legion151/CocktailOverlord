@@ -63,7 +63,7 @@ def alertAnim(colors, frame, idxs, tier):
     v = bottom + frame*step
    else:
     v = 1-(frame%steps*step)
-   colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0 if tier = 2 else .11, 1, v)))
+   colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0 if tier == 2 else .11, 1, v)))
  
 
 def adjIdx(i):
@@ -138,12 +138,12 @@ class Enlightment:
    alertAnim(self.colors, frame , self.db.get_bottles_toWarn(2), 2)
 
    adjBrightness(self.colors, b = float(self.configMap['brightness']))
-   self.serWrite()
+ #  self.serWrite()
    
    frame %= int(self.configMap['nbrBottles'])*30
    if not frame:
      self.setBgAnim(random.choice(self.bgAnimFuncs))
-     self.sync()
+ #    self.sync()
      log("animation chage: " + str(self.bgAnim.__module__))
 
    time.sleep(1./float(self.configMap["speed"]))
