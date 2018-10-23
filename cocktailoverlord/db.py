@@ -90,6 +90,9 @@ class CocktailDB:
         self.cur.execute("CREATE INDEX IF NOT EXISTS recipe_cocktail on recipe(cocktail)")
         self.cur.execute("CREATE INDEX IF NOT EXISTS recipe_ingredient on recipe(ingredient)")
         self.cur.execute("CREATE INDEX IF NOT EXISTS storage_ingredient on storage(ingredient)")
+        self.cur.execute("CREATE VIEW IF NOT EXISTS possible_recipes_wrt_storage (ingredient, amount) as select o.ingredient, o.amount from recipe o, cocktail c where o.cocktail not in (select cocktail from recipe r where r.ingredient not in (select ingredient from storage where ingredient)) and o.cocktail == c.id")
+        self.cur.execute("CREATE VIEW IF NOT EXISTS warn_tierone (location) as select s.location from storage s, (select ingredient, max(amount) as amount from possible_recipes_wrt_storage group by ingredient) as max where s.amount < max.amount and s.ingredient == max.ingredient;")
+        self.cur.execute("CREATE VIEW IF NOT EXISTS warn_tiertwo (location) as select s.location from storage s, (select ingredient, min(amount) as amount from possible_recipes_wrt_storage group by ingredient) as min where s.amount < min.amount and s.ingredient == min.ingredient;")
 
     def delete_db(self):
         self.cur.execute("DROP TABLE IF EXISTS cocktail")
@@ -102,6 +105,9 @@ class CocktailDB:
         self.cur.execute("DROP INDEX IF EXISTS recipe_ingredient")
         self.cur.execute("DROP INDEX IF EXISTS storage_ingredient")
         self.cur.execute("DROP VIEW IF EXISTS available_ingredients")
+        self.cur.execute("DROP VIEW IF EXISTS possible_recipes_wrt_storage")
+        self.cur.execute("DROP VIEW IF EXISTS warn_tierone")
+        self.cur.execute("DROP VIEW IF EXISTS warn_tiertwo")
         
     # Adds a new cocktail and returns its id
     # Setting force to True will overwrite the existing cocktail instead
@@ -202,6 +208,13 @@ class CocktailDB:
     # Returns total amount, summing over all valid locations
     def get_ingredient_amount(self, ingredient_id):
         pass
+
+    def get_bottles_toWarn(self, tier):
+        if(tier==1):
+            self.cur.execute("SELECT location from warn_tierone")
+        if(tier==2):
+            self.cur.execute("SELECT location from warn_tiertwo")
+        return [r[0] for r in self.cur.fetchall()]
 
     # Returns storage locations and total amounts needed for all ingredients of a cocktail
     def get_cocktail_ingredient_locations(self, cocktail):
