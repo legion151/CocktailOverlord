@@ -162,7 +162,6 @@ class Enlightment:
    except:
     log("could not open device" + str(device))
     continue
-   #self.sync()
    self.ser.write(b'HELL')
    start = time.time()
    result = self.ser.read_all()
@@ -174,16 +173,9 @@ class Enlightment:
 
   log("no device found which answered correct")
   self.device = None
- 
- def sync(self):
-  pass
-#  while self.ser.read(1) != b'1':
-#   self.ser.write(b'0')
- 
+
  def serWrite(self):
   for k in self.colors:
-#   print(self.colors)
-#   log("sending: " + ' '.join(str(hex(e)) for e in bytearray([k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])))
    try:
     #adjust for protocol
     for k,v in self.colors.items():
@@ -191,9 +183,7 @@ class Enlightment:
         self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
         print([int(e)for e in bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])])
    except:
-#    pass
     self.device = None
-#   print([hex(e) for e in self.ser.read_all()])
   
  def readConfig(self):
   self.configMap = {}
