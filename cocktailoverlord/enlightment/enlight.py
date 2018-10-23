@@ -136,10 +136,11 @@ class Enlightment:
    frame %= int(self.configMap['nbrBottles'])*30
    if not frame:
      self.setBgAnim(random.choice(self.bgAnimFuncs))
-     self.sync()
+#     self.sync()
      log("animation chage: " + str(self.bgAnim.__module__))
 
-   time.sleep(1./float(self.configMap["speed"]))
+   #time.sleep(1./float(self.configMap["speed"]))
+   time.sleep(.001)
   
   
  def setColor(self, idx, r, g, b):
@@ -178,8 +179,9 @@ class Enlightment:
   self.device = None
  
  def sync(self):
-  while self.ser.read(1) != b'1':
-   self.ser.write(b'0')
+  pass
+#  while self.ser.read(1) != b'1':
+#   self.ser.write(b'0')
  
  def serWrite(self):
   for k in self.colors:
@@ -189,8 +191,9 @@ class Enlightment:
     #adjust for protocol
     for k,v in self.colors.items():
         self.colors[k] = tuple((val if val < 255 else 254 for val in v))
-    self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
-    self.sync()
+        self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
+#        time.sleep(.01)
+        print([int(e)for e in bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])])
    except:
 #    pass
     self.device = None
