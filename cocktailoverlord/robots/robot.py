@@ -56,6 +56,7 @@ class Robot:
         self.sendCmd(b"##DISCONNECT")
 
     def _connect(self, ports=None):
+        self.enlight.startThread()
         if not ports:
             ports = glob.glob('/dev/ttyUSB0')
         for device in ports:

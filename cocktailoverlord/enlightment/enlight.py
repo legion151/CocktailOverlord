@@ -89,9 +89,12 @@ class Enlightment:
   self.setBgAnim(self.bgAnimFuncs[0])
 
   self.worker = Thread(target=self.thread_loop)
-  self.worker.daemon = True
-  self.worker.start()
+#  self.worker.daemon = True
+#  self.worker.start()
   print(self.configMap)
+
+ def startThread(self):
+  self.worker.start()
 
  def loadBGAnims(self):
   files = []
