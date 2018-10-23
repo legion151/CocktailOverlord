@@ -181,7 +181,7 @@ class Enlightment:
     for k,v in self.colors.items():
         self.colors[k] = tuple((val if val < 255 else 254 for val in v))
         self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
-        print([int(e)for e in bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])])
+        #print([int(e)for e in bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])])
    except:
     self.device = None
   
