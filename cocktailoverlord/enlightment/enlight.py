@@ -18,6 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os, serial, sys, time, glob, random, colorsys, importlib
 from threading import Thread
+
+if __name__ == "__main__": 
+    sys.path.insert(0, "/home/legion/hackzogtum/botprog/CocktailOverlord/cocktailoverlord")
 import db
 
 def log(s):
@@ -72,7 +75,6 @@ def adjIdx(i):
  return lut_bot2Light[i]
 
 
-
 class Enlightment:
  def __init__(self):
   self.readConfig()
@@ -102,8 +104,10 @@ class Enlightment:
   files = map(lambda fn: fn.strip(".py"), files)
   funcs = []
   for f in files: 
-   #funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
-   funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
+   if __name__ == "__main__":
+    funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
+   else:
+    funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
   self.bgAnimFuncs = funcs  
 
 
