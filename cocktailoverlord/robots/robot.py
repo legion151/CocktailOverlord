@@ -111,7 +111,7 @@ class Robot:
     def progress(self):
         if self.cmd_cnt:
          v = float(self.cmd_queue.qsize()) / self.cmd_cnt
-         print("progress: " + v)
+         print("progress: " + str(v))
          if not v: 
              self.enlight.stopMixing()
              return v
