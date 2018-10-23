@@ -175,7 +175,7 @@ class Enlightment:
    except:
     log("could not open device" + str(device))
     continue
-   self.sync()
+   #self.sync()
    self.ser.write(b'HELL')
    start = time.time()
    result = self.ser.read_all()
@@ -201,7 +201,7 @@ class Enlightment:
     for k,v in self.colors.items():
         self.colors[k] = tuple((val if val < 255 else 254 for val in v))
     self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
-    self.sync()
+#    self.sync()
    except:
 #    pass
     self.device = None
