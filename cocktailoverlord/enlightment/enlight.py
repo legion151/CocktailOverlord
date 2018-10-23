@@ -33,7 +33,7 @@ def mixAnim(colors, c,  frame, idxs):
  idxs = map(adjIdx, idxs)
  steps =9
  bottom = .5
- myrange = 1.-bottom
+ myrange = .75-bottom
  step = myrange/steps
  frame %= (steps*2)
  
