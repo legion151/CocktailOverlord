@@ -25,8 +25,6 @@ import db
 
 def log(s):
  print("Enlighter says: " + str(s))
-def checkColor(v):
- return v >= 0 and v < 256
 
 def adjBrightness(colors, b):
  for k, v in colors.items():
@@ -84,7 +82,7 @@ class Enlightment:
   self.ser = serial.Serial("/dev/ttyUSB0", timeout=.01,baudrate=115200)
 
   for i in range(int(self.configMap['nbrBottles'])):
-   self.setColor(i, 0,0,0)
+   self.colors[i] = (0,0,0)
   self.mixingIdxs = None
 
   self.loadBGAnims()
@@ -151,18 +149,7 @@ class Enlightment:
      log("animation chage: " + str(self.bgAnim.__module__))
 
    time.sleep(1./float(self.configMap["speed"]))
-  
-  
- def setColor(self, idx, r, g, b):
-  if idx < 0 or idx > int(self.configMap['nbrBottles'])-1:
-   log("Wrong index: " + str(idx))
-   return
-  if checkColor(r) and checkColor(g) and checkColor(b):
-   self.colors[idx] = (r,g,b)
-  else:
-   log("bad color: r " +str(r) + " g " + str(g) + " b " + str(b))
-
-  
+   
  def connect(self):
   log("connect attempt")
   ports = glob.glob('/dev/ttyUSB*')
@@ -217,8 +204,6 @@ class Enlightment:
     sp = l.split("=")
     sp = [e.strip() for e in sp]
     self.configMap[sp[0]] = sp[1]
-
-
 
 
 if __name__ == "__main__":
