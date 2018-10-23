@@ -140,7 +140,7 @@ class Enlightment:
    alertAnim(self.colors, frame , self.db.get_bottles_toWarn(2), 2)
 
    adjBrightness(self.colors, b = float(self.configMap['brightness']))
- #  self.serWrite()
+   self.serWrite()
    
    frame %= int(self.configMap['nbrBottles'])*30
    if not frame:
