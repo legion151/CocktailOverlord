@@ -70,7 +70,7 @@ class Enlightment:
   self.readConfig()
   self.colors = {}
   self.device = "asdf"
-  self.ser = serial.Serial("/dev/ttyUSB1", timeout=.01,baudrate=9600)
+  self.ser = serial.Serial("/dev/ttyUSB0", timeout=.01,baudrate=115200)
 
   for i in range(int(self.configMap['nbrBottles'])):
    self.setColor(i, 0,0,0)
@@ -93,8 +93,8 @@ class Enlightment:
   files = map(lambda fn: fn.strip(".py"), files)
   funcs = []
   for f in files: 
-   funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
-   #funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
+   #funcs.append(importlib.import_module("enlightment.anims.bg.active."+str(f), package=None).anim)
+   funcs.append(importlib.import_module("anims.bg.active."+str(f), package=None).anim)
   self.bgAnimFuncs = funcs  
 
 
@@ -186,8 +186,11 @@ class Enlightment:
 #   print(self.colors)
 #   log("sending: " + ' '.join(str(hex(e)) for e in bytearray([k, self.colors[k][0],self.colors[k][1],self.colors[k][2]])))
    try:
-    self.ser.write(bytearray([k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
-#    self.sync()
+    #adjust for protocol
+    for k,v in self.colors.items():
+        self.colors[k] = tuple((val if val < 255 else 254 for val in v))
+    self.ser.write(bytearray([0xff, k, self.colors[k][0],self.colors[k][1],self.colors[k][2]]))
+    self.sync()
    except:
 #    pass
     self.device = None
