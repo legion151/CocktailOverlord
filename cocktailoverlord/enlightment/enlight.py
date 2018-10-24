@@ -30,11 +30,18 @@ def adjBrightness(colors, b):
  for k, v in colors.items():
   colors[k] = tuple(map(lambda c: int(c*b), v))
 
+def adjIdx(i):
+ #lut_light2Bot = {0:14, 1:12, 2:10, 3:8, 4:6, 5:4, 6:2, 7:0, 8:1, 9:3, 10:5, 11:7, 12:9, 13:11, 14:13}
+ lut_bot2Light = {0:7, 1:8, 2:6, 3:9, 4:5, 5:10, 6:4, 7:11, 8:3, 9:12, 10:2, 11:13, 12:1, 13:14, 14:0} 
+ return lut_bot2Light[i]
+
 def mixAnim(colors, c,  frame, idxs):
- idxs = map(adjIdx, idxs)
+ if not idxs:
+     return
+ idxs = [e for e in map(adjIdx, idxs)]
  steps =9
  bottom = .5
- myrange = .75-bottom
+ myrange = 1-bottom
  step = myrange/steps
  frame %= (steps*2)
  
@@ -51,7 +58,7 @@ def mixAnim(colors, c,  frame, idxs):
  
 
 def alertAnim(colors, frame, idxs, tier):
- idxs = map(adjIdx, idxs)
+ idxs = [e for e in map(adjIdx, idxs)]
  steps =3
  bottom = .5
  myrange = 1.-bottom
@@ -67,23 +74,24 @@ def alertAnim(colors, frame, idxs, tier):
    colors[i] = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(0 if tier == 2 else .11, 1, v)))
  
 
-def adjIdx(i):
- #lut_light2Bot = {0:14, 1:12, 2:10, 3:8, 4:6, 5:4, 6:2, 7:0, 8:1, 9:3, 10:5, 11:7, 12:9, 13:11, 14:13}
- lut_bot2Light = {0:7, 1:8, 2:6, 3:9, 4:5, 5:10, 6:4, 7:11, 8:3, 9:12, 10:2, 11:13, 12:1, 13:14, 14:0} 
- return lut_bot2Light[i]
 
 
 class Enlightment:
  def __init__(self):
   self.readConfig()
   self.colors = {}
-  self.device = "d"
   self.db = db.CocktailDB("tmp.sqlite3")
-  self.ser = serial.Serial("/dev/ttyUSB0", timeout=.01,baudrate=115200)
+  self.device = None
+  #self.ser = serial.Serial("/dev/ttyUSB2", timeout=.01,baudrate=115200)
+  self.mixCol = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(100./random.randint(50,100), 1, .15)))
 
   for i in range(int(self.configMap['nbrBottles'])):
    self.colors[i] = (0,0,0)
   self.mixingIdxs = None
+  self.started = False
+
+  self.bottlesToWarn_tierOne = self.db.get_bottles_toWarn(1)
+  self.bottlesToWarn_tierTwo = self.db.get_bottles_toWarn(2)
 
   self.loadBGAnims()
   self.setBgAnim(self.bgAnimFuncs[0])
@@ -94,7 +102,9 @@ class Enlightment:
   print(self.configMap)
 
  def startThread(self):
-  self.worker.start()
+  if not self.started:
+   self.worker.start()
+   self.started = True
 
  def loadBGAnims(self):
   files = []
@@ -117,6 +127,8 @@ class Enlightment:
 
  def setMixing(self, idxs):
   log("mix called idx: " + str(idxs))
+  self.bottlesToWarn_tierOne = self.db.get_bottles_toWarn(1)
+  self.bottlesToWarn_tierTwo = self.db.get_bottles_toWarn(2)
   self.mixCol = tuple(map(lambda x: int(255*x), colorsys.hsv_to_rgb(100./random.randint(50,100), 1, .15)))
   self.mixingIdxs = idxs
 
@@ -128,7 +140,7 @@ class Enlightment:
   log("threadloop")
   frame=-1
   while True:
-   while False and not self.device:
+   while not self.device:
     self.connect()
     if not self.device:
      time.sleep(1)
@@ -139,24 +151,29 @@ class Enlightment:
    else:
     self.bgAnim(self.colors, frame)
    
-   alertAnim(self.colors, frame , self.db.get_bottles_toWarn(1), 1)
-   alertAnim(self.colors, frame , self.db.get_bottles_toWarn(2), 2)
+   if self.bottlesToWarn_tierOne:
+    alertAnim(self.colors, frame , self.bottlesToWarn_tierOne, 1)
+    if self.bottlesToWarn_tierTwo:
+     alertAnim(self.colors, frame , self.bottlesToWarn_tierTwo, 2)
 
    adjBrightness(self.colors, b = float(self.configMap['brightness']))
    self.serWrite()
    
    frame %= int(self.configMap['nbrBottles'])*30
    if not frame:
+     self.loadBGAnims()
      self.setBgAnim(random.choice(self.bgAnimFuncs))
      log("animation chage: " + str(self.bgAnim.__module__))
+     self.bottlesToWarn_tierOne = self.db.get_bottles_toWarn(1)
+     self.bottlesToWarn_tierTwo = self.db.get_bottles_toWarn(2)
 
-   time.sleep(1./float(self.configMap["speed"]))
+   #time.sleep(1./float(self.configMap["speed"]))
   
  
  def connect(self):
   log("connect attempt")
   ports = glob.glob('/dev/ttyUSB*')
-  self.ser = serial.Serial(timeout=.01,baudrate=9600)
+  self.ser = serial.Serial(timeout=1,baudrate=115200)
   for device in ports:
    log("trying: " + str(device))
    self.ser.port = device
@@ -165,11 +182,10 @@ class Enlightment:
    except:
     log("could not open device" + str(device))
     continue
-   self.ser.write(b'HELL')
-   start = time.time()
-   result = self.ser.read_all()
+   self.ser.write(bytearray([0xff, 0xff, 0xff, 0xff, 0xff]))
+   result = self.ser.readall()
    log("got back: "  + str(result))
-   if result.find(b'FIRE'):
+   if result.find(b'HELLFIRE') >=0 :
     self.device = device 
     log("connected to " + str(device))
     return
@@ -202,8 +218,8 @@ class Enlightment:
 
 if __name__ == "__main__":
  e = Enlightment()
- while True: 
-  time.sleep(5)
+# while True: 
+#  time.sleep(5)
 
 
 
