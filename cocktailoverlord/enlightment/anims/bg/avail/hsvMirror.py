@@ -1,7 +1,7 @@
 import colorsys, time
 def anim(colors, frame):
-    stretch = 25
-    hueStep = 1/stretch
+    stretch = 45
+    hueStep = 1./stretch
 
 
     bottom(colors,frame, hueStep)
