@@ -56,9 +56,8 @@ class Robot:
         self.sendCmd(b"##DISCONNECT")
 
     def _connect(self, ports=None):
-        self.enlight.startThread()
         if not ports:
-            ports = glob.glob('/dev/ttyUSB0')
+            ports = glob.glob('/dev/ttyUSB*')
         for device in ports:
             self.state = "connecting"
             self.ser.port = device
@@ -74,6 +73,7 @@ class Robot:
                 result += self.ser.read_all()
                 if result.find(b"[MSG:'$H'|'$X' to unlock]") >= 0:
                     self.state = "connected"
+                    self.enlight.startThread()
                     print("connected")
                     break
                 if time.time() - start > 15.:
@@ -112,12 +112,9 @@ class Robot:
     def progress(self):
         if self.cmd_cnt:
          v = float(self.cmd_queue.qsize()) / self.cmd_cnt
-         print("progress: " + str(v))
          if not v: 
-             self.enlight.stopMixing()
              return v
         else:
-            self.enlight.stopMixing()
             return 1.0
 
     def busy(self):
@@ -141,6 +138,7 @@ class Robot:
                 self.ser.write(cmd)
                 print(self.readResponse() or "ok")
                 if self.cmd_queue.empty(): # XXX not on error
+                    self.enlight.stopMixing()
                     self.state = "ready"
 
 if __name__ == "__main__":
